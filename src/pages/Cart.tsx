@@ -5,15 +5,31 @@ import StateModel from '../base/state.model';
 import { connect } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { changeTotalCartItems, clearCart } from '../redux/actions';
+import { StateProps, DispatchProps } from '../base/props.model';
+import { History } from 'history';
 
-function Cart(props: any) {
+interface ParentProps {
+    history: History;
+}
+
+type Props = StateProps & DispatchProps & ParentProps;
+
+function Cart(props: Props) {
     const {carts, user, clearCart, changeTotalCartItems, history} = props;
     const userCart = carts[user.id];
 
     const clearAllCartItems = () => {
         clearCart(user.id);
         changeTotalCartItems(0);
+        goHome();
+    };
+
+    const goHome = () => {
         history.push('/');
+    };
+
+    const goToPayment = () => {
+        history.push('/payment');
     };
 
     return (
@@ -28,15 +44,18 @@ function Cart(props: any) {
             </Grid>
             <Grid container justify='space-between' alignItems='center' className='py-4'>
                 <div>
-                    <Button variant="contained" href='/'>Back</Button>
+                    <Button variant="contained" onClick={goHome}>Back</Button>
                     <IconButton color="primary"
                                 onClick={() => clearAllCartItems()}
                                 disabled={!userCart}>
                         <DeleteIcon/>
                     </IconButton>
                 </div>
-                <Button variant="contained" color="primary" href='/payment' disabled={!userCart}>Proceed to
-                    payment</Button>
+                <Button variant="contained"
+                        color="primary"
+                        onClick={goToPayment}
+                        disabled={!userCart}>Proceed to payment</Button>
+
             </Grid>
         </Container>
     );

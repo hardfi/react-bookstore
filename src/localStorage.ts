@@ -1,6 +1,8 @@
 import StateModel from './base/state.model';
+import {loaderState$} from './App'
+
 const initialStoreState = {
-    contacts: [],
+    users: [],
     user: '',
     session: false,
     carts: {},
@@ -21,11 +23,18 @@ export const loadState = () => {
     }
 };
 
-export const saveState = (state: StateModel) => {
+export const saveState = async (state: StateModel) => {
     try {
+        loaderState$.next(true);
+        await timeout(1000);
+        loaderState$.next(false);
         const serializedState = JSON.stringify(state);
         localStorage.setItem('state', serializedState);
     } catch {
         // ignore write errors
     }
 };
+
+function timeout(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

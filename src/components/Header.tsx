@@ -10,6 +10,15 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import HomeIcon from '@material-ui/icons/Home';
 import { UserActionsContainer } from './UserActions';
 import { makeStyles } from '@material-ui/core/styles';
+import { USER_ROLE } from '../base/user-role.model';
+import { DispatchProps, StateProps } from '../base/props.model';
+import { History } from 'history';
+
+interface ParentProps {
+    history: History;
+}
+
+type Props = StateProps & DispatchProps & ParentProps;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,12 +37,16 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function Header(props: any) {
+function Header(props: Props) {
     const classes = useStyles();
     const {user, session, total, history} = props;
 
     const handleGoToHistory = () => {
-        history.push('orders-history');
+        history.push('/orders-history');
+    };
+
+    const handleGoToUsers = () => {
+        history.push('/users');
     };
 
     return (
@@ -55,14 +68,14 @@ function Header(props: any) {
                         <span className={classes.span}>{user.name + ' ' + user.surname}</span>
                       </Grid>
                       <Grid container item xs={6} justify='flex-end'>
-                        <Link to='/cart'>
-                          <IconButton style={{color: 'white'}} aria-label="add to shopping cart">
-                            <Badge badgeContent={total} color="secondary">
-                              <ShoppingCartIcon/>
-                            </Badge>
-                          </IconButton>
-                        </Link>
-                        <UserActionsContainer goToHistory={handleGoToHistory}/>
+                          {user.role === USER_ROLE.client && <Link to='/cart'>
+                            <IconButton style={{color: 'white'}} aria-label="add to shopping cart">
+                              <Badge badgeContent={total} color="secondary">
+                                <ShoppingCartIcon/>
+                              </Badge>
+                            </IconButton>
+                          </Link>}
+                        <UserActionsContainer goToHistory={handleGoToHistory} goToUsers={handleGoToUsers}/>
                       </Grid>
                     </Grid>}
                 </Toolbar>

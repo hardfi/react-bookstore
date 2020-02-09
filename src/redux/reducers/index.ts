@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { contacts } from './contacts';
+import { users } from './users';
 import { user } from './user';
 import { session } from './session';
 import { books } from './books';
@@ -8,15 +8,17 @@ import { total } from './total';
 import { orders } from './orders';
 import { modal } from './modal';
 import { book } from './book';
+import { dialog } from './dialog';
 
 export default combineReducers({
     user,
-    contacts,
+    users,
     session,
     books,
     book,
     carts,
     total,
     orders,
-    modal
+    modal,
+    dialog
 });

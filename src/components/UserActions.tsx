@@ -4,11 +4,16 @@ import React from 'react';
 import StateModel from '../base/state.model';
 import { sessionChange } from '../redux/actions';
 import { connect } from 'react-redux';
+import { USER_ROLE } from '../base/user-role.model';
+import { DispatchProps, StateProps } from '../base/props.model';
 
-function UserActions(props: any) {
+type Props = StateProps & DispatchProps;
+
+function UserActions(props: Props) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-    const {sessionChange} = props;
+    const {sessionChange, user} = props;
+    const isAdmin = user.role === USER_ROLE.admin;
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -26,6 +31,11 @@ function UserActions(props: any) {
     const handleGoToHistory = () => {
         handleClose();
         props.goToHistory();
+    };
+
+    const handleGoToUserList = () => {
+        handleClose();
+        props.goToUsers();
     };
 
     return (
@@ -54,7 +64,8 @@ function UserActions(props: any) {
                 open={open}
                 onClose={handleClose}
             >
-                <MenuItem onClick={handleGoToHistory}>Order history</MenuItem>
+                <MenuItem onClick={handleGoToHistory}>{isAdmin ? 'Orders management' : 'Order history'}</MenuItem>
+                {isAdmin && <MenuItem onClick={handleGoToUserList}>Users management</MenuItem>}
                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
             </Menu>
         </div>
@@ -64,6 +75,7 @@ function UserActions(props: any) {
 const mapStateToProps = (state: StateModel) => {
     return {
         session: state.session,
+        user: state.user
     }
 };
 const mapDispatchToProps = {sessionChange};

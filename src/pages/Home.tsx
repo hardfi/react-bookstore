@@ -7,17 +7,22 @@ import {
     booksFetched,
     changeTotalCartItems,
     deductBookQuantity,
+    deleteBook, dialogClose, dialogOpen,
     modalClose,
     modalOpen,
     selectBook
 } from '../redux/actions';
 import { BookModel } from '../base/book.model';
 import { CartItemModel } from '../base/cart-item.model';
-import { SimpleDialogContainer } from '../components/Dialog';
+import { BookInfoDialogContainer } from '../components/BookInfoDialog';
 import { BookTile } from '../components/BookTile';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { toast } from 'react-toastify';
+import { DispatchProps, StateProps } from '../base/props.model';
 
-class Home extends React.Component<any, []> {
-    password: string = '';
+type Props = StateProps & DispatchProps;
+
+class Home extends React.Component<Props, []> {
     key = '4lVEBSCdFNHEqwxXMup58JdxrCSgJ1DK';
 
     componentDidMount(): void {
@@ -44,8 +49,8 @@ class Home extends React.Component<any, []> {
     }
 
     getRandomPrice = () => {
-        const min = 20;
-        const max = 60;
+        const min = 5;
+        const max = 20;
         return (Math.random() * (max - min) + min).toFixed(2);
     };
 
@@ -56,15 +61,26 @@ class Home extends React.Component<any, []> {
         this.changeTotalCartItems();
     };
 
+    handleModalOpen = (selectedBook: BookModel) => {
+        const {modalOpen, selectBook} = this.props;
+        selectBook(selectedBook);
+        modalOpen();
+    };
+
+    handleConfirmOpen = (selectedBook: BookModel) => {
+        const {dialogOpen, selectBook} = this.props;
+        selectBook(selectedBook);
+        dialogOpen();
+    };
+
     handleModalClose = () => {
         const {modalClose} = this.props;
         modalClose();
     };
 
-    handleModalOpen = (selectedBook: BookModel) => {
-        const {modalOpen, selectBook} = this.props;
-        selectBook(selectedBook);
-        modalOpen();
+    handleConfirmClose = () => {
+        const {dialogClose} = this.props;
+        dialogClose();
     };
 
     changeTotalCartItems(): void {
@@ -74,20 +90,37 @@ class Home extends React.Component<any, []> {
         }
     }
 
+    handleBookDelete = (book: BookModel) => {
+        const {deleteBook} = this.props;
+        deleteBook(book.id);
+        this.handleConfirmClose();
+        toast.success('Book has been deleted successfully');
+    };
+
     render(): React.ReactElement | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
-        const {books, modal} = this.props;
+        const {books, modal, user, dialog, book} = this.props;
+        const activeBooks = books.filter((book: BookModel) => !book.deleted);
 
         return (
             <Container style={{padding: 20}}>
                 <Grid item xs={12} container spacing={4} justify='center'>
-                    {books.map((book: BookModel) => (
+                    {activeBooks.map((book: BookModel) => (
                         <BookTile selectedBook={book}
                                   key={book.id}
+                                  userRole={user.role}
+                                  onBookDelete={this.handleConfirmOpen}
                                   onModalOpen={this.handleModalOpen}
                                   addToCart={this.handleAddToCart}/>
                     ))}
                 </Grid>
-                <SimpleDialogContainer open={modal} onClose={this.handleModalClose}/>
+                <BookInfoDialogContainer open={modal}
+                                         onClose={this.handleModalClose}/>
+                <ConfirmDialog open={dialog}
+                               onClose={this.handleConfirmClose}
+                               dialogTitle='Remove book'
+                               data={book}
+                               dialogText={'Do you really want to delete ' + book.title + '?'}
+                               onConfirm={this.handleBookDelete}/>
             </Container>
         )
     }
@@ -97,8 +130,10 @@ const mapStateToProps = (state: StateModel) => {
     return {
         user: state.user,
         books: state.books,
+        book: state.book,
         carts: state.carts,
-        modal: state.modal
+        modal: state.modal,
+        dialog: state.dialog
     }
 };
 
@@ -109,7 +144,10 @@ const mapDispatchToProps = {
     changeTotalCartItems,
     modalOpen,
     modalClose,
-    selectBook
+    selectBook,
+    deleteBook,
+    dialogOpen,
+    dialogClose
 };
 
 export const HomePage = connect(mapStateToProps, mapDispatchToProps)(Home);

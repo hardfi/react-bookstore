@@ -21,6 +21,20 @@ export const books = (state: any = [], action: ActionModel) => {
                 }
                 return book;
             });
+        case 'CHANGE_BOOK_DETAILS':
+            return state.map((book: BookModel) => {
+                if (book.id === action.book.id) {
+                    Object.assign(book, action.book);
+                }
+                return book;
+            });
+        case 'DELETE_BOOK':
+            return state.map((book: BookModel) => {
+               if (book.id === action.bookId) {
+                   book.deleted = true;
+               }
+               return book;
+            });
         default:
             return state
     }

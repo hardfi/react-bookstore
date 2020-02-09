@@ -1,10 +1,11 @@
 import UserModel from '../../base/user.model';
 import { BookModel } from '../../base/book.model';
 import { OrderModel } from '../../base/order.model';
+import { ORDER_STATUSES } from '../../base/order-statuses.model';
 
-export const contactsFetched = (contacts: UserModel[]) => ({
-  type: 'FETCH_CONTACTS_SUCCESS',
-  contacts
+export const usersFetched = (users: UserModel[]) => ({
+  type: 'FETCH_USERS_SUCCESS',
+  users
 });
 
 export const userChanged = (user: UserModel) => ({
@@ -37,6 +38,16 @@ export const addBookQuantity = (bookId: string) => ({
   bookId
 });
 
+export const changeBookDetails = (book: BookModel) => ({
+  type: 'CHANGE_BOOK_DETAILS',
+  book
+});
+
+export const deleteBook = (bookId: string) => ({
+  type: 'DELETE_BOOK',
+  bookId
+});
+
 export const addBookToCart = (book: BookModel, userId: number) => ({
   type: 'ADD_BOOK_TO_CART',
   book,
@@ -64,10 +75,24 @@ export const addOrder = (order: OrderModel) => ({
   order
 });
 
+export const changeOrderStatus = (orderId: string, status: ORDER_STATUSES) => ({
+  type: 'ORDER_STATUS_CHANGE',
+  status,
+  orderId
+});
+
 export const modalOpen = () => ({
   type: 'MODAL_OPEN',
 });
 
 export const modalClose = () => ({
   type: 'MODAL_CLOSE',
+});
+
+export const dialogOpen = () => ({
+  type: 'DIALOG_OPEN',
+});
+
+export const dialogClose = () => ({
+  type: 'DIALOG_CLOSE',
 });

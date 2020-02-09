@@ -4,9 +4,8 @@ export default interface UserModel {
     id: number;
     name: string;
     surname: string;
-    username: string;
-    password: string;
-    role: USER_ROLE;
-    pictureUrl: string;
-    loggedIn: boolean;
+    username?: string;
+    password?: string;
+    role?: USER_ROLE;
+    pictureUrl?: string;
 }

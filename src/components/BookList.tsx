@@ -22,8 +22,15 @@ import {
     removeBookFromCart
 } from '../redux/actions';
 import { connect } from 'react-redux';
+import { DispatchProps, StateProps } from '../base/props.model';
 
-class BookList extends React.Component<any, any> {
+interface ParentProps {
+    mode: string;
+}
+
+type Props = StateProps & DispatchProps & ParentProps;
+
+class BookList extends React.Component<Props, any> {
 
     handleRemoveItem = (book: BookModel) => {
         const {removeBookFromCart, addBookQuantity, changeTotalCartItems, user, carts} = this.props;
@@ -40,16 +47,29 @@ class BookList extends React.Component<any, any> {
     }
 
     getTotalForRow(userCart: CartItemModel[], book: BookModel): string {
-        const item = userCart.find((item: CartItemModel) => item.id === book.id);
-        if (item) {
-            return (item.quantity * Number(book.price)).toString();
-        } else {
-            return '0.00';
+        if (userCart) {
+            const item = userCart.find((item: CartItemModel) => item.id === book.id);
+            if (item) {
+                return (item.quantity * parseFloat((book.price).toString())).toFixed(2);
+            } else {
+                return '0.00';
+            }
         }
+        return '';
+    }
+
+    getTotal(userCart: CartItemModel[]): string {
+        if (userCart) {
+            return userCart.reduce((p: number, c: CartItemModel) => {
+                p += (Number(c.price) * c.quantity);
+                return p;
+            }, 0).toFixed(2);
+        }
+        return '';
     }
 
     render(): React.ReactElement | string | number | {} | React.ReactNodeArray | React.ReactPortal | boolean | null | undefined {
-        const {user, total, carts, books, mode} = this.props;
+        const {user, carts, books, mode} = this.props;
         const userCart = user.id in carts ? carts[user.id] : null;
         const userBooks = userCart ? userCart.map((item: CartItemModel) => books.find((book: BookModel) => book.id === item.id)) : [];
         return (
@@ -65,7 +85,7 @@ class BookList extends React.Component<any, any> {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {userBooks.map((book: BookModel) => <TableRow key={book.id}>
+                    {userBooks.forEach((book: BookModel) => <TableRow key={book.id}>
                         <TableCell>
                             <ListItemAvatar>
                                 <Avatar alt={book.title} src={book.book_cover}></Avatar>
@@ -73,7 +93,7 @@ class BookList extends React.Component<any, any> {
                         </TableCell>
                         <TableCell>{book.title}</TableCell>
                         <TableCell>{book.author}</TableCell>
-                        <TableCell>{book.price}</TableCell>
+                        <TableCell>{'\u20AC' + book.price}</TableCell>
                         {mode === 'edit' &&
                         <TableCell>
                           <IconButton color="primary"
@@ -90,12 +110,17 @@ class BookList extends React.Component<any, any> {
                         </TableCell>}
                         {mode === 'preview' &&
                         <TableCell>{userCart.find((item: CartItemModel) => item.id === book.id).quantity}</TableCell>}
-                        <TableCell>{this.getTotalForRow(userCart, book)}</TableCell>
+                        <TableCell>{'\u20AC' + this.getTotalForRow(userCart, book)}</TableCell>
                     </TableRow>)}
+                    <TableRow>
+                        <TableCell colSpan={4}/>
+                        <TableCell align="right"><strong>Total:</strong></TableCell>
+                        <TableCell>{this.getTotal(userCart)}</TableCell>
+                    </TableRow>
                     {!userBooks.length && <TableRow>
-                        <TableCell colSpan={6}>
-                          <Typography variant='h6' align='center'>Your cart is empty.</Typography>
-                        </TableCell>
+                      <TableCell colSpan={6}>
+                        <Typography variant='h6' align='center'>Your cart is empty.</Typography>
+                      </TableCell>
                     </TableRow>}
                 </TableBody>
             </Table>

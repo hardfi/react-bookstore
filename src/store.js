@@ -9,7 +9,7 @@ store.subscribe(() => {
   console.log('store.getState()');
   console.log(store.getState());
   saveState({
-    contacts: store.getState().contacts,
+    users: store.getState().users,
     user: store.getState().user,
     session: store.getState().session,
     books: store.getState().books,
