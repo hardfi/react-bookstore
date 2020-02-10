@@ -1,13 +1,11 @@
-import {createStore} from 'redux';
+import { createStore } from 'redux';
 import reducers from './redux/reducers';
-import {loadState, saveState} from './localStorage';
+import { loadState, saveState } from './localStorage';
 
 const persistedState = loadState();
 export const store = createStore(reducers, persistedState);
 
 store.subscribe(() => {
-  console.log('store.getState()');
-  console.log(store.getState());
   saveState({
     users: store.getState().users,
     user: store.getState().user,
@@ -15,6 +13,6 @@ store.subscribe(() => {
     books: store.getState().books,
     carts: store.getState().carts,
     total: store.getState().total,
-    orders: store.getState().orders
+    orders: store.getState().orders,
   });
 });
