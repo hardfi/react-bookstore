@@ -76,13 +76,13 @@ export function Orders(props: Props) {
                 )}
                 {isAdmin && (
                   <TableCell>
-                    <StatusChangeSelectContainer status={order.status} orderId={order.id}/>
+                    <StatusChangeSelectContainer status={order.status} orderId={order.id} />
                   </TableCell>
                 )}
                 {!isAdmin && <TableCell>{order.status}</TableCell>}
                 <TableCell>{`\u20AC${order.total}`}</TableCell>
                 <TableCell>
-                  <div style={{display: 'flex'}}>
+                  <div style={{ display: 'flex' }}>
                     {order.books.map((book: CartItemModel) => {
                       const fullBookInfo: BookModel = books
                         .find((bk: BookModel) => bk.id === book.id) as BookModel;

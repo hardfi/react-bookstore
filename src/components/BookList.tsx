@@ -128,7 +128,11 @@ class BookList extends React.Component<Props, any> {
                 </TableCell>
               )}
               {mode === 'preview'
-              && <TableCell>{userCart.find((item: CartItemModel) => item.id === book.id).quantity}</TableCell>}
+              && (
+              <TableCell>
+                {userCart.find((item: CartItemModel) => item.id === book.id).quantity}
+              </TableCell>
+              )}
               <TableCell>{`\u20AC${getTotalForRow(book)}`}</TableCell>
             </TableRow>
           ))}

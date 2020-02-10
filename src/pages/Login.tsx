@@ -21,10 +21,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 function Login(props: Props) {
   const classes = useStyles();
-  const {session, user, users} = props;
+  const { session, user, users } = props;
 
   const selectUser = (selectedUser: UserModel) => {
-    const {userChanged, sessionChange} = props;
+    const { userChanged, sessionChange } = props;
     userChanged(selectedUser);
     sessionChange(true);
   };
@@ -70,7 +70,7 @@ function Login(props: Props) {
               <span>{usr.role}</span>
             </Grid>
           ))}
-          {session && user && <Redirect to='/'/>}
+          {session && user && <Redirect to='/' />}
         </Grid>
       </Grid>
     </Container>
@@ -83,6 +83,6 @@ const mapStateToProps = (state: StateModel) => ({
   session: state.session,
 });
 
-const mapDispatchToProps = {userChanged, sessionChange};
+const mapDispatchToProps = { userChanged, sessionChange };
 
 export const LoginPage = connect(mapStateToProps, mapDispatchToProps)(Login);
