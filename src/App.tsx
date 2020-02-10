@@ -39,8 +39,6 @@ export class App extends React.Component<Props, any> {
   }
 
   componentDidMount() {
-    console.log('environment()');
-    console.log(environment());
     const { users } = this.props;
     if (!users.length) {
       const { usersFetched } = this.props;
