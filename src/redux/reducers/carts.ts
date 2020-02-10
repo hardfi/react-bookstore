@@ -3,8 +3,6 @@ import { CartItemModel } from '../../base/cart-item.model';
 
 export const carts = (state: any = [], action: ActionModel) => {
     const {userId, book} = action;
-    console.log('book');
-    console.log(book);
     switch (action.type) {
         case 'ADD_BOOK_TO_CART':
             const addBook = () => {
